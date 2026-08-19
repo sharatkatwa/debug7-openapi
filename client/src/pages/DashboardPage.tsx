@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ProductsService } from "../api/generated/services/ProductsService";
-import { OrdersService } from "../api/generated/services/OrdersService";
-import { CartService } from "../api/generated/services/CartService";
-import { StatusBadge } from "../components/common/StatusBadge";
+import { ProductsService, OrdersService, CartService } from "../api/generated";
+import { StatusBadge } from "../components";
 import { Boxes, ShoppingBag, ShieldCheck, ArrowRight, Activity } from "lucide-react";
 
 export const DashboardPage: React.FC = () => {

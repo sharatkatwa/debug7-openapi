@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { AuthPanel } from "../components/security/AuthPanel";
-import { CartService } from "../api/generated/services/CartService";
+import { AuthPanel, Button } from "../components";
+import { CartService } from "../api/generated";
 import { tokenStorage } from "../api/tokenStorage";
 import type { User, Cart, CartItem } from "../api/types";
 import { ShoppingBag, RefreshCw, Cpu } from "lucide-react";
-import { Button } from "../components/common/Button";
 
 export const SecurityPage: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);

@@ -1,9 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import { AppLayout } from "../components/layout/AppLayout";
-import { DashboardPage } from "../pages/DashboardPage";
-import { InventoryPage } from "../pages/InventoryPage";
-import { OrdersPage } from "../pages/OrdersPage";
-import { SecurityPage } from "../pages/SecurityPage";
+import { AppLayout, ProtectedRoute } from "../components";
+import { DashboardPage, InventoryPage, OrdersPage, SecurityPage } from "../pages";
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +17,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <OrdersPage />,
+        element: (
+          <ProtectedRoute>
+            <OrdersPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "security",

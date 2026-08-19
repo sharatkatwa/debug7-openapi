@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { OrdersService } from "../api/generated/services/OrdersService";
-import { CartService } from "../api/generated/services/CartService";
+import { OrdersService, CartService } from "../api/generated";
 import type { Order, Cart } from "../api/types";
-import { OrderList } from "../components/orders/OrderList";
-import { OrderDetailDrawer } from "../components/orders/OrderDetailDrawer";
-import { PlaceOrderModal } from "../components/orders/PlaceOrderModal";
-import { Button } from "../components/common/Button";
+import { OrderList, OrderDetailDrawer, PlaceOrderModal, Button } from "../components";
 import { Plus, Filter, CheckCircle2 } from "lucide-react";
 
 export const OrdersPage: React.FC = () => {
@@ -31,7 +27,7 @@ export const OrdersPage: React.FC = () => {
         setOrders(ordersData);
         setSelectedOrder(ordersData[0]);
       } else {
-        // Mock fallback demo orders matching backend schema exactly
+        // Fallback demo orders matching backend schema exactly
         const demoOrders: Order[] = [
           {
             _id: "66b1a9982a1b",
