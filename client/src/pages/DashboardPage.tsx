@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ProductsService, OrdersService, CartService } from "../api/generated";
 import { StatusBadge } from "../components";
-import { Boxes, ShoppingBag, ShieldCheck, ArrowRight, Activity } from "lucide-react";
+import { Boxes, ShoppingBag, UserCircle, ArrowRight, Activity } from "lucide-react";
 
 export const DashboardPage: React.FC = () => {
   const [productCount, setProductCount] = useState<number | null>(null);
@@ -45,7 +45,7 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <StatusBadge
             status={isHealthOk ? "operational" : "error"}
-            label={isHealthOk ? "BACKEND OPERATIONAL" : "BACKEND OFFLINE"}
+            label={isHealthOk ? "STORE ONLINE" : "STORE OFFLINE"}
             size="md"
           />
           <span className="font-mono text-xs text-[#5a413b]/70">
@@ -56,7 +56,7 @@ export const DashboardPage: React.FC = () => {
           Store Management Console
         </h1>
         <p className="text-sm text-[#5a413b]/80 max-w-2xl leading-relaxed">
-          Manage your product catalog, monitor customer orders, review session authentication, and inspect your API endpoints.
+          Manage your product catalog, monitor customer orders, review cart items, and inspect active APIs.
         </p>
       </div>
 
@@ -112,17 +112,17 @@ export const DashboardPage: React.FC = () => {
           </div>
         </Link>
 
-        {/* Cart Session Stat */}
+        {/* Cart / Profile Stat */}
         <Link
           to="/security"
           className="glass-panel rounded-3xl p-6 flex flex-col justify-between hover:shadow-lg hover:scale-[1.01] transition-all group cursor-pointer border border-white/80"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="w-10 h-10 rounded-2xl bg-[#27C93F]/10 flex items-center justify-center text-[#27C93F]">
-              <ShieldCheck className="w-5 h-5" />
+              <UserCircle className="w-5 h-5" />
             </div>
             <span className="font-mono text-xs font-bold text-[#27C93F] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              <span>Session Details</span>
+              <span>Account & Cart</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </div>
@@ -132,7 +132,7 @@ export const DashboardPage: React.FC = () => {
               {cartCount !== null ? `${cartCount} items` : "..."}
             </span>
             <p className="text-xs font-bold text-[#5a413b]/80 mt-1 uppercase tracking-wider font-mono">
-              Active User Cart & Auth
+              Customer Cart & Profile
             </p>
           </div>
         </Link>
@@ -147,10 +147,10 @@ export const DashboardPage: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-[#1b1c1c] tracking-tight">
-                Active Backend API Contracts
+                Store API Services
               </h2>
               <p className="text-xs text-[#5a413b]/80">
-                Directly connected to Express controller & repository architecture.
+                Connected to Express backend and MongoDB database.
               </p>
             </div>
           </div>
@@ -161,7 +161,7 @@ export const DashboardPage: React.FC = () => {
             rel="noreferrer"
             className="text-xs font-mono font-bold text-[#b42907] hover:underline"
           >
-            Open Scalar Docs ↗
+            Open API Docs ↗
           </a>
         </div>
 

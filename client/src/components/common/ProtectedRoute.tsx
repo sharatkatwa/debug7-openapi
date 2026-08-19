@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { tokenStorage } from "../../api/tokenStorage";
-import { ShieldAlert, LogIn, ArrowRight } from "lucide-react";
+import { User, LogIn } from "lucide-react";
 import { Button } from "./Button";
 
 interface ProtectedRouteProps {
@@ -26,20 +26,20 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
   }
 
-  // 1. Not Authenticated
+  // 1. Not Signed In
   if (!token) {
     return (
       <div className="glass-panel rounded-3xl p-12 text-center max-w-lg mx-auto my-12 space-y-6 border border-white/80 shadow-xl">
         <div className="w-16 h-16 rounded-3xl bg-[#ff5e3a]/15 text-[#b42907] flex items-center justify-center mx-auto shadow-inner">
-          <ShieldAlert className="w-8 h-8" />
+          <User className="w-8 h-8" />
         </div>
 
         <div className="space-y-2">
           <h2 className="text-2xl font-black text-[#1b1c1c] tracking-tight">
-            Authentication Required
+            Please Sign In
           </h2>
           <p className="text-xs text-[#5a413b]/80 leading-relaxed">
-            This section communicates with protected backend middleware (<code>/api/orders</code> & <code>/api/cart</code>). Please sign in or create an account to continue.
+            You need to be signed in to view your order history and checkout your shopping cart.
           </p>
         </div>
 
@@ -51,7 +51,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
               icon={<LogIn className="w-4 h-4" />}
               className="shadow-lg shadow-[#b42907]/25"
             >
-              Sign In / Register
+              Go to Sign In
             </Button>
           </Link>
         </div>
@@ -64,26 +64,22 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return (
       <div className="glass-panel rounded-3xl p-12 text-center max-w-lg mx-auto my-12 space-y-6 border border-white/80 shadow-xl">
         <div className="w-16 h-16 rounded-3xl bg-[#ba1a1a]/15 text-[#ba1a1a] flex items-center justify-center mx-auto">
-          <ShieldAlert className="w-8 h-8" />
+          <User className="w-8 h-8" />
         </div>
 
         <div className="space-y-2">
           <h2 className="text-2xl font-black text-[#1b1c1c] tracking-tight">
-            Admin Access Required
+            Administrator Access Required
           </h2>
           <p className="text-xs text-[#5a413b]/80 leading-relaxed">
-            Your current account role is <code className="font-bold">{userRole || "user"}</code>. You must be signed in with an <strong>admin</strong> role to access this route.
+            This action requires an administrator account.
           </p>
         </div>
 
         <div className="pt-2 flex justify-center">
           <Link to="/security">
-            <Button
-              variant="glass"
-              size="md"
-              icon={<ArrowRight className="w-4 h-4" />}
-            >
-              Switch Session in Security
+            <Button variant="glass" size="md">
+              Switch Account in Profile
             </Button>
           </Link>
         </div>

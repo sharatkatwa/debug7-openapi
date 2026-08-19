@@ -4,7 +4,7 @@ import {
   LayoutDashboard,
   Boxes,
   ShoppingCart,
-  ShieldCheck,
+  UserCircle,
   BookOpen,
 } from "lucide-react";
 import { tokenStorage } from "../../api/tokenStorage";
@@ -14,7 +14,7 @@ export const Sidebar: React.FC = () => {
     { to: "/", label: "Dashboard", icon: LayoutDashboard },
     { to: "/inventory", label: "Inventory", icon: Boxes },
     { to: "/orders", label: "Orders", icon: ShoppingCart },
-    { to: "/security", label: "Security & Auth", icon: ShieldCheck },
+    { to: "/security", label: "Account", icon: UserCircle },
   ];
 
   const isAuthenticated = !!tokenStorage.getAccessToken();
@@ -34,7 +34,7 @@ export const Sidebar: React.FC = () => {
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-2 h-2 rounded-full bg-[#27C93F] animate-pulse" />
               <span className="font-mono text-[10px] font-bold text-[#5a413b]/70 tracking-wider">
-                API Live
+                Store Live
               </span>
             </div>
           </div>
@@ -72,15 +72,18 @@ export const Sidebar: React.FC = () => {
         >
           <div className="flex items-center gap-2.5">
             <BookOpen className="w-4 h-4 text-[#b42907]" />
-            <span>Scalar API Docs</span>
+            <span>API Docs</span>
           </div>
           <span className="font-mono text-[10px] text-[#5a413b]/70 group-hover:text-[#b42907]">
-            :5000
+            Scalar
           </span>
         </a>
 
         {/* User profile card */}
-        <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-white/40 border border-white/60">
+        <NavLink
+          to="/security"
+          className="flex items-center gap-3 p-2.5 rounded-2xl bg-white/40 border border-white/60 hover:bg-white transition-all block"
+        >
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3B82F6] to-[#EC4899] p-0.5">
             <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-[11px] font-bold text-[#1b1c1c]">
               {isAuthenticated ? "U" : "G"}
@@ -88,13 +91,13 @@ export const Sidebar: React.FC = () => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-[#1b1c1c] truncate">
-              {isAuthenticated ? "Signed In User" : "Guest Mode"}
+              {isAuthenticated ? "Active Customer" : "Guest Mode"}
             </p>
             <p className={`font-mono text-[10px] font-bold ${isAuthenticated ? "text-[#27C93F]" : "text-[#5a413b]/70"}`}>
-              {isAuthenticated ? "Token Active" : "No Auth Session"}
+              {isAuthenticated ? "Signed In" : "Sign In ➔"}
             </p>
           </div>
-        </div>
+        </NavLink>
       </div>
     </aside>
   );

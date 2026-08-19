@@ -3,7 +3,8 @@ import { AuthPanel, Button } from "../components";
 import { CartService } from "../api/generated";
 import { tokenStorage } from "../api/tokenStorage";
 import type { User, Cart, CartItem } from "../api/types";
-import { ShoppingBag, RefreshCw, Cpu } from "lucide-react";
+import { ShoppingBag, RefreshCw, Cpu, Package } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const SecurityPage: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -17,8 +18,8 @@ export const SecurityPage: React.FC = () => {
         const decoded = JSON.parse(atob(payloadBase64));
         setCurrentUser({
           id: decoded.id,
-          name: decoded.role === "admin" ? "System Admin" : "Verified User",
-          email: "active.user@horizon.io",
+          name: decoded.role === "admin" ? "Store Administrator" : "Customer",
+          email: "customer@horizon.io",
           role: decoded.role || "user",
         });
 
@@ -41,66 +42,76 @@ export const SecurityPage: React.FC = () => {
     <div className="space-y-12">
       {/* Page Header */}
       <div>
-        <h1 className="text-4xl font-extrabold text-[#1b1c1c] tracking-tight">Security & Sessions</h1>
+        <h1 className="text-4xl font-extrabold text-[#1b1c1c] tracking-tight">Account & Profile</h1>
         <p className="text-xs text-[#5a413b]/80 mt-1">
-          Manage JWT tokens, middleware interceptors, and active user session states.
+          Manage your customer account, view current cart items, and sign in.
         </p>
       </div>
 
-      {/* Auth Panel and Live Token Inspector */}
+      {/* Account Profile and Sign-In Card */}
       <AuthPanel currentUser={currentUser} onAuthChange={checkAuthAndCart} />
 
-      {/* Live Cart Session Inspector */}
-      <div className="glass-panel rounded-3xl p-8 space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#546500]/10 flex items-center justify-center text-[#546500]">
-              <ShoppingBag className="w-5 h-5" />
+      {/* User Shopping Cart Summary */}
+      {currentUser && (
+        <div className="glass-panel rounded-3xl p-8 space-y-6 max-w-4xl mx-auto border border-white/80">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#546500]/10 flex items-center justify-center text-[#546500]">
+                <ShoppingBag className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-[#1b1c1c]">Active Shopping Cart</h3>
+                <p className="text-xs text-[#5a413b]/70">Items ready for order placement</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-[#1b1c1c]">Active User Cart Session</h3>
-              <p className="text-xs text-[#5a413b]/70">Endpoint: GET /api/cart (Requires Protect Middleware)</p>
-            </div>
+
+            <Button
+              variant="glass"
+              size="sm"
+              icon={<RefreshCw className="w-3.5 h-3.5" />}
+              onClick={checkAuthAndCart}
+            >
+              Refresh
+            </Button>
           </div>
 
-          <Button
-            variant="glass"
-            size="sm"
-            icon={<RefreshCw className="w-3.5 h-3.5" />}
-            onClick={checkAuthAndCart}
-          >
-            Refresh Cart
-          </Button>
+          {cart && cart.items && cart.items.length > 0 ? (
+            <div className="space-y-4">
+              <div className="divide-y divide-[#eae8e7]/80">
+                {cart.items.map((item: CartItem, idx: number) => {
+                  const productName =
+                    typeof item.product === "object" ? item.product.name : "Catalog Hardware Item";
+                  return (
+                    <div key={idx} className="py-3.5 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-black/5 flex items-center justify-center text-[#5a413b]">
+                          <Cpu className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-[#1b1c1c]">{productName}</p>
+                          <p className="font-mono text-xs text-[#5a413b]/70">Quantity: {item.quantity}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="pt-4 border-t border-[#eae8e7] flex justify-end">
+                <Link to="/orders">
+                  <Button variant="primary" size="md" icon={<Package className="w-4 h-4" />}>
+                    Go to Orders & Checkout ➔
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="p-8 rounded-2xl bg-[#efeded] text-center text-xs text-[#5a413b]">
+              Your cart is currently empty. Visit the <Link to="/inventory" className="text-[#b42907] font-bold underline">Inventory page</Link> to add items.
+            </div>
+          )}
         </div>
-
-        {cart && cart.items && cart.items.length > 0 ? (
-          <div className="divide-y divide-[#eae8e7]/80">
-            {cart.items.map((item: CartItem, idx: number) => {
-              const productName =
-                typeof item.product === "object" ? item.product.name : item.product;
-              return (
-                <div key={idx} className="py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-black/5 flex items-center justify-center text-[#5a413b]">
-                      <Cpu className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-[#1b1c1c]">{productName}</p>
-                      <p className="font-mono text-[10px] text-[#5a413b]/70">Quantity: {item.quantity}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="p-6 rounded-2xl bg-[#efeded] text-center text-xs text-[#5a413b]">
-            {currentUser
-              ? "Cart is empty. Go to Inventory and click '+ Cart' to populate items."
-              : "Please sign in above to access and manipulate your user cart session."}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };
