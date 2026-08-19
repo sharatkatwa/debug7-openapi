@@ -1,4 +1,8 @@
 import swaggerJSDoc from "swagger-jsdoc";
+import dotenv from "dotenv";
+dotenv.config();
+
+const PORT = process.env.PORT || 5000;
 
 const options: swaggerJSDoc.Options = {
   definition: {
@@ -10,7 +14,7 @@ const options: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:4000",
+        url: `http://localhost:${PORT}`,
         description: "Local Development Server",
       },
     ],

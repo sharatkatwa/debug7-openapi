@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { swaggerSpec } from "../src/config/swagger";
+import { swaggerSpec } from "../config/swagger";
 
 const outputDir = path.resolve(__dirname, "../generated");
 const outputPath = path.join(outputDir, "openapi.json");

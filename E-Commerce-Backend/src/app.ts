@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import swaggerUi from "swagger-ui-express";
+import { apiReference } from "@scalar/express-api-reference";
 import { swaggerSpec } from "./config/swagger";
 import routes from "./routes";
 import { errorHandler, notFound } from "./middlewares/error.middleware";
@@ -22,14 +22,24 @@ app.get("/", (_req: Request, res: Response) => {
   res.json({ success: true, message: "E-commerce backend is running" });
 });
 
-// Swagger UI Route
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 // Raw OpenAPI JSON spec endpoint
 app.get("/api/docs.json", (_req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/json");
   res.send(swaggerSpec);
 });
+
+// Scalar API Reference UI
+app.use(
+  "/api/docs",
+  apiReference({
+    spec: {
+      content: swaggerSpec,
+    },
+    theme: "purple",
+    darkMode: true,
+    pageTitle: "Horizon E-Commerce API Reference",
+  })
+);
 
 app.use("/api", routes);
 

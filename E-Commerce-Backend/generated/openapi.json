@@ -1,0 +1,546 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "E-Commerce API",
+    "version": "1.0.0",
+    "description": "E-commerce backend API documentation generated from route annotations"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "accessToken"
+      }
+    },
+    "schemas": {
+      "RegisterDTO": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        }
+      },
+      "LoginDTO": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        }
+      },
+      "CreateProductDTO": {
+        "type": "object",
+        "required": [
+          "name",
+          "price",
+          "category"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Wireless Headphones"
+          },
+          "description": {
+            "type": "string",
+            "example": "Noise cancelling headphones"
+          },
+          "price": {
+            "type": "number",
+            "example": 199.99
+          },
+          "category": {
+            "type": "string",
+            "example": "Electronics"
+          },
+          "stock": {
+            "type": "number",
+            "example": 50
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "https://example.com/item.jpg"
+          }
+        }
+      },
+      "UpdateProductDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "stock": {
+            "type": "number"
+          },
+          "imageUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "AddCartItemDTO": {
+        "type": "object",
+        "required": [
+          "productId",
+          "quantity"
+        ],
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "64f1a2b3c4d5e6f7a8b9c0d1"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "409": {
+            "description": "User already exists"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "summary": "Log in user",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/users/refresh-token": {
+      "post": {
+        "summary": "Refresh access token",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Access token refreshed successfully"
+          },
+          "401": {
+            "description": "Invalid or expired refresh token"
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "post": {
+        "summary": "Log out user and revoke refresh token",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "summary": "List all products with optional filtering",
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by category"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by name/description keyword"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Products fetched successfully"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a product (Admin only)",
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Admin access required"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "summary": "Get product by ID",
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product fetched successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a product (Admin only)",
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Admin access required"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a product (Admin only)",
+        "tags": [
+          "Products"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "403": {
+            "description": "Admin access required"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "post": {
+        "summary": "Place an order from the current cart",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Order placed successfully"
+          },
+          "400": {
+            "description": "Cart empty or insufficient stock"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get order history for current user",
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order history fetched successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/api/cart": {
+      "post": {
+        "summary": "Add item to user cart",
+        "tags": [
+          "Cart"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCartItemDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item added to cart successfully"
+          },
+          "400": {
+            "description": "Validation or stock error"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get current user cart",
+        "tags": [
+          "Cart"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart fetched successfully"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

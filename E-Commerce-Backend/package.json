@@ -12,6 +12,7 @@
     "generate:client": "npm run generate:openapi && openapi --input ./generated/openapi.json --output ../client/src/api/generated --client axios"
   },
   "dependencies": {
+    "@scalar/express-api-reference": "^0.10.14",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
