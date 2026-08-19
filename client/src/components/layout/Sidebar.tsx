@@ -5,23 +5,19 @@ import {
   Boxes,
   ShoppingCart,
   ShieldCheck,
-  KeyRound,
   BookOpen,
-  HelpCircle,
 } from "lucide-react";
-import { Button } from "../common/Button";
+import { tokenStorage } from "../../api/tokenStorage";
 
-interface SidebarProps {
-  onOpenApiKeyModal?: () => void;
-}
-
-export const Sidebar: React.FC<SidebarProps> = ({ onOpenApiKeyModal }) => {
+export const Sidebar: React.FC = () => {
   const navItems = [
     { to: "/", label: "Dashboard", icon: LayoutDashboard },
     { to: "/inventory", label: "Inventory", icon: Boxes },
     { to: "/orders", label: "Orders", icon: ShoppingCart },
-    { to: "/security", label: "Security", icon: ShieldCheck },
+    { to: "/security", label: "Security & Auth", icon: ShieldCheck },
   ];
+
+  const isAuthenticated = !!tokenStorage.getAccessToken();
 
   return (
     <aside className="w-64 min-h-screen flex flex-col justify-between p-6 border-r border-[#eae8e7]/80 bg-[#fbf9f8]/60 backdrop-blur-md sticky top-0 h-screen overflow-y-auto">
@@ -33,12 +29,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenApiKeyModal }) => {
           </div>
           <div>
             <h1 className="font-extrabold text-lg tracking-tight text-[#1b1c1c] leading-tight">
-              Horizon Admin
+              Horizon Store
             </h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-2 h-2 rounded-full bg-[#27C93F] animate-pulse" />
               <span className="font-mono text-[10px] font-bold text-[#5a413b]/70 tracking-wider">
-                Backend v2.4.0
+                API Live
               </span>
             </div>
           </div>
@@ -66,49 +62,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenApiKeyModal }) => {
         </nav>
       </div>
 
-      {/* Bottom Actions & Profile */}
-      <div className="space-y-6 pt-6">
-        {/* New API Key Action */}
-        <Button
-          variant="primary"
-          size="md"
-          icon={<KeyRound className="w-4 h-4" />}
-          className="w-full justify-center shadow-lg shadow-[#b42907]/20"
-          onClick={onOpenApiKeyModal}
+      {/* Bottom Profile & Scalar Docs */}
+      <div className="space-y-4 pt-6 border-t border-[#eae8e7]/80">
+        <a
+          href="http://localhost:5000/api/docs"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-between px-4 py-2.5 rounded-2xl glass-panel text-xs font-bold text-[#1b1c1c] hover:bg-white transition-all shadow-sm group"
         >
-          New API Key
-        </Button>
-
-        {/* Secondary Links */}
-        <div className="space-y-2 px-2 text-xs font-medium text-[#5a413b]/80">
-          <a
-            href="http://localhost:4000/api/docs"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2.5 py-1.5 hover:text-[#1b1c1c] transition-colors"
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>Documentation</span>
-          </a>
-          <a
-            href="#support"
-            className="flex items-center gap-2.5 py-1.5 hover:text-[#1b1c1c] transition-colors"
-          >
-            <HelpCircle className="w-4 h-4" />
-            <span>Support</span>
-          </a>
-        </div>
+          <div className="flex items-center gap-2.5">
+            <BookOpen className="w-4 h-4 text-[#b42907]" />
+            <span>Scalar API Docs</span>
+          </div>
+          <span className="font-mono text-[10px] text-[#5a413b]/70 group-hover:text-[#b42907]">
+            :5000
+          </span>
+        </a>
 
         {/* User profile card */}
-        <div className="flex items-center gap-3 p-2 rounded-2xl bg-white/40 border border-white/60">
+        <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-white/40 border border-white/60">
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#3B82F6] to-[#EC4899] p-0.5">
-            <div className="w-full h-full rounded-full bg-white/90 flex items-center justify-center text-[11px] font-bold text-[#1b1c1c]">
-              SA
+            <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-[11px] font-bold text-[#1b1c1c]">
+              {isAuthenticated ? "U" : "G"}
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-[#1b1c1c] truncate">System Admin</p>
-            <p className="font-mono text-[10px] text-[#27C93F] font-bold">Active Session</p>
+            <p className="text-xs font-bold text-[#1b1c1c] truncate">
+              {isAuthenticated ? "Signed In User" : "Guest Mode"}
+            </p>
+            <p className={`font-mono text-[10px] font-bold ${isAuthenticated ? "text-[#27C93F]" : "text-[#5a413b]/70"}`}>
+              {isAuthenticated ? "Token Active" : "No Auth Session"}
+            </p>
           </div>
         </div>
       </div>
